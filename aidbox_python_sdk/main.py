@@ -21,11 +21,11 @@ async def init_aidbox(app):
     try:
         json = {
             'url': app['settings'].APP_URL,
+            'app_id': app['settings'].APP_ID,
             'secret': app['settings'].APP_INIT_CLIENT_SECRET,
         }
         async with app['init_http_client'].post(
-                '{}/App/$init'.format(app['settings'].APP_INIT_URL),
-                json=json
+            '{}/App/$init'.format(app['settings'].APP_INIT_URL), json=json
         ) as resp:
             if 200 <= resp.status < 300:
                 logger.info('Initializing Aidbox app...')
@@ -33,12 +33,19 @@ async def init_aidbox(app):
                 logger.error(
                     'Aidbox app initialized failed. '
                     'Response from Aidbox: {0} {1}'.format(
-                        resp.status, await resp.text()))
+                        resp.status, await resp.text()
+                    )
+                )
                 sys.exit(errno.EINTR)
-    except (client_exceptions.ServerDisconnectedError,
-            client_exceptions.ClientConnectionError):
-        logger.error('Aidbox address is unreachable {}'.format(
-            app['settings'].APP_INIT_URL))
+    except (
+        client_exceptions.ServerDisconnectedError,
+        client_exceptions.ClientConnectionError
+    ):
+        logger.error(
+            'Aidbox address is unreachable {}'.format(
+                app['settings'].APP_INIT_URL
+            )
+        )
         sys.exit(errno.EINTR)
 
 
@@ -50,9 +57,10 @@ async def wait_and_init_aidbox(app):
             async with app['init_http_client'].get(address, timeout=5):
                 pass
             break
-        except (asyncio.TimeoutError,
-                client_exceptions.InvalidURL,
-                client_exceptions.ClientConnectionError):
+        except (
+            asyncio.TimeoutError, client_exceptions.InvalidURL,
+            client_exceptions.ClientConnectionError
+        ):
             await asyncio.sleep(2)
     await init_aidbox(app)
 
@@ -60,7 +68,8 @@ async def wait_and_init_aidbox(app):
 async def on_startup(app):
     basic_auth = BasicAuth(
         login=app['settings'].APP_INIT_CLIENT_ID,
-        password=app['settings'].APP_INIT_CLIENT_SECRET)
+        password=app['settings'].APP_INIT_CLIENT_SECRET
+    )
     app['init_http_client'] = ClientSession(auth=basic_auth)
 
     asyncio.get_event_loop().create_task(wait_and_init_aidbox(app))
@@ -77,7 +86,7 @@ async def on_shutdown(app):
 
 
 async def create_app(settings, sdk, debug=False):
-    app = web.Application(debug=debug)
+    app = web.Application()
     app.on_startup.append(on_startup)
     app.on_cleanup.append(on_cleanup)
     app.on_shutdown.append(on_shutdown)
@@ -90,4 +99,3 @@ async def create_app(settings, sdk, debug=False):
     )
     setup_routes(app)
     return app
-
