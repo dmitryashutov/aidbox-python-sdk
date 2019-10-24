@@ -87,7 +87,8 @@ class SDK(object):
                     await self.client.resources(entity).get(id=resource_id)
                 except ResourceNotFound:
                     seed_resource = self.client.resource(
-                        entity, id=resource_id, **resource
+                        entity,
+                        **{**resource, 'id': resource_id}
                     )
                     await seed_resource.save()
                     logger.debug(
@@ -156,7 +157,7 @@ class SDK(object):
             for method in methods:
                 operation_id = '{}.{}.{}.{}'.format(
                     method, func.__module__, func.__name__, '_'.join(_str_path)
-                )
+                ).replace('$', 'd')
                 self._operations[operation_id] = {
                     'method': method,
                     'path': path,
