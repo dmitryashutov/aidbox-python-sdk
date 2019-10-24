@@ -22,7 +22,7 @@ async def init_aidbox(app):
         json = {
             'url': app['settings'].APP_URL,
             'app_id': app['settings'].APP_ID,
-            'secret': app['settings'].APP_INIT_CLIENT_SECRET,
+            'secret': app['settings'].AIDBOX_CLIENT_SECRET,
         }
         async with app['init_http_client'].post(
             '{}/App/$init'.format(app['settings'].APP_INIT_URL), json=json
@@ -67,8 +67,8 @@ async def wait_and_init_aidbox(app):
 
 async def on_startup(app):
     basic_auth = BasicAuth(
-        login=app['settings'].APP_INIT_CLIENT_ID,
-        password=app['settings'].APP_INIT_CLIENT_SECRET
+        login=app['settings'].AIDBOX_CLIENT_ID,
+        password=app['settings'].AIDBOX_CLIENT_SECRET
     )
     app['init_http_client'] = ClientSession(auth=basic_auth)
 

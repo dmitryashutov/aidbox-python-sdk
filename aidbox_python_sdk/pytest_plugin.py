@@ -85,8 +85,8 @@ async def aidbox(client):
     """HTTP client for making requests to Aidbox"""
     app = client.server.app
     basic_auth = BasicAuth(
-        login=app["settings"].APP_INIT_CLIENT_ID,
-        password=app["settings"].APP_INIT_CLIENT_SECRET,
+        login=app["settings"].AIDBOX_CLIENT_ID,
+        password=app["settings"].AIDBOX_CLIENT_SECRET,
     )
     session = AidboxSession(auth=basic_auth)
     yield session

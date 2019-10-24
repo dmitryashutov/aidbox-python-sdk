@@ -20,15 +20,13 @@ class Settings:
     """
     _ENV_PREFIX = ''
 
-    APP_INIT_CLIENT_ID = Required(v_type=str)
-    APP_INIT_CLIENT_SECRET = Required(v_type=str)
+    AIDBOX_CLIENT_ID = Required(v_type=str)
+    AIDBOX_CLIENT_SECRET = Required(v_type=str)
     APP_INIT_URL = Required(v_type=str)
     APP_ID = Required(v_type=str)
     APP_URL = Required(v_type=str)
     APP_PORT = Required(v_type=int)
     APP_SECRET = Required(v_type=str)
-    AIO_HOST = Required(v_type=str)
-    AIO_PORT = Required(v_type=str)
 
     def __init__(self, **custom_settings):
         """
