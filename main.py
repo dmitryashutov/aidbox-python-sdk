@@ -11,6 +11,7 @@ from aidbox_python_sdk.main import create_app as _create_app
 from aidbox_python_sdk.settings import Settings
 from aidbox_python_sdk.sdk import SDK
 from aidbox_python_sdk.handlers import routes
+from aidbox_python_sdk.exceptions import AidboxSDKException
 
 logger = logging.getLogger()
 coloredlogs.install(level='DEBUG', fmt='%(asctime)s %(levelname)s %(message)s')
@@ -166,6 +167,11 @@ async def daily_patient_report(operation, request):
             'msg': 'Response from APP'
         }
     )
+
+
+@sdk.operation(methods=['GET'], path=['App', '$sdk-exception'])
+async def sdk_exception(operation, request):
+    raise AidboxSDKException(reason='Test sdk exception')
 
 
 @routes.get('/db_tests')
